@@ -14,7 +14,7 @@ async def get_student(id: str):
     except Exception as e:
         return HTTPException(status_code=500, detail=str(e))
 
-@router.get("/students")
+@router.get("/students", response_description="List all students")
 async def list_students():
     try:
         return await student_controller.get_all_students()
