@@ -54,3 +54,15 @@ async def delete_student(id: str):
         return JSONResponse(status_code=500, content=response)
 
 
+async def update_student(id: str, data: dict) -> dict:
+    try:
+        update_result = await collection.update_one({"_id": ObjectId(id)}, {"$set": data})      
+        if update_result.modified_count <= 0:
+            response = {"status": False, "message": f"failed to update: {update_result.modified_count}"}
+            return JSONResponse(status_code=500, content=response)
+        updated_student = await collection.find_one({"_id": ObjectId(id)})
+        response = {"status": True, "message": "update successfully", "data": student_helper(updated_student)}
+        return JSONResponse(status_code=200, content=response)     
+    except Exception as e:
+        response = {"message": f"Error: {str(e)}", "status": False}
+        return JSONResponse(status_code=500,  content=response)        
